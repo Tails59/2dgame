@@ -1,4 +1,4 @@
-package game2D;
+package engine2d;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;

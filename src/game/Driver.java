@@ -3,8 +3,9 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
-import game2D.GameCore;
+import engine2d.GameCore;
 
 @SuppressWarnings("serial")
 class Driver extends GameCore{
@@ -51,5 +52,30 @@ class Driver extends GameCore{
 	@Override
 	public void keyTyped(KeyEvent e) {
 		userInput.keyTyped(e);
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		userInput.mouseClicked(e);
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent e) { 
+		userInput.mousePressed(e);
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) { 
+		userInput.mouseReleased(e);
+	}
+	
+	@Override
+	public void mouseExited(MouseEvent e) { 
+		userInput.mouseExited(e);
+	}
+	
+	@Override
+	public void mouseEntered(MouseEvent e) { 
+		userInput.mouseEntered(e);
 	}
 }

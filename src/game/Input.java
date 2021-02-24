@@ -1,9 +1,14 @@
 package game;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 class Input {
 	public void keyPressed(KeyEvent e) {
+		// Game controls
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) 
+			Driver.dr.stop();
+			
 		// Player Movement
 		switch(e.getKeyCode()) {
 			case KeyEvent.VK_RIGHT:
@@ -39,6 +44,26 @@ class Input {
 	}
 	
 	public void keyTyped(KeyEvent e) {
+		
+	}
+	
+	public void mouseClicked(MouseEvent e) { 
+		
+	}
+	
+	public void mousePressed(MouseEvent e) {
+		
+	}
+	
+	public void mouseReleased(MouseEvent e) { 
+		
+	}
+	
+	public void mouseExited(MouseEvent e) { 
+		
+	}
+	
+	public void mouseEntered(MouseEvent e) { 
 		
 	}
 }

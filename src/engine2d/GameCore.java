@@ -1,8 +1,10 @@
-package game2D;
+package engine2d;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.*;
@@ -14,7 +16,7 @@ import javax.swing.*;
  * Core Game class that implements default game loop. Subclasses should
  * implement the draw() method and override the update method.
 */
-public abstract class GameCore extends JFrame implements KeyListener {
+public abstract class GameCore extends JFrame implements KeyListener, MouseListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -255,6 +257,17 @@ public abstract class GameCore extends JFrame implements KeyListener {
 	 * Handler for the keyPressed event (empty)
 	 */
 	public void keyPressed(KeyEvent e) { }
+	
+	
+	public void mouseClicked(MouseEvent e) { }
+	
+	public void mousePressed(MouseEvent e) { }
+	
+	public void mouseReleased(MouseEvent e) { }
+	
+	public void mouseExited(MouseEvent e) { }
+	
+	public void mouseEntered(MouseEvent e) { }
 	
 	/**
 	 * Handler for the keyTyped event (empty)

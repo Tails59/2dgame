@@ -1,4 +1,4 @@
-package game2D;
+package engine2d;
 
 import java.awt.Image;
 import java.awt.Toolkit;

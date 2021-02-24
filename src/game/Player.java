@@ -6,8 +6,8 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.ImageIcon;
 
-import game2D.Animation;
-import game2D.Sprite;
+import engine2d.Animation;
+import engine2d.Sprite;
 
 class Player extends Sprite{
 	private static Animation walkAnim;

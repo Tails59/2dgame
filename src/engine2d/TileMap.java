@@ -1,4 +1,4 @@
-package game2D;
+package engine2d;
 
 import javax.swing.ImageIcon;
 import java.awt.Graphics2D;

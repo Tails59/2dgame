@@ -1,4 +1,4 @@
-package game2D;
+package engine2d;
 
 /**
  * A Tile in the TileMap.

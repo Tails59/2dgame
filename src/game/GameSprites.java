@@ -1,7 +1,7 @@
 package game;
 
-import game2D.Animation;
-import game2D.Sprite;
+import engine2d.Animation;
+import engine2d.Sprite;
 
 class GameSprites extends Sprite{
 

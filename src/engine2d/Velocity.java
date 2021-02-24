@@ -1,4 +1,4 @@
-package game2D;
+package engine2d;
 
 /**
 	The Velocity class provides the ability to manipulate and specify a
