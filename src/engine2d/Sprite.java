@@ -4,13 +4,15 @@ import java.awt.Image;
 import java.awt.*;
 import java.awt.geom.*;
 
+import game.Collision;
+
 /**
  * This class provides the functionality for a moving animated image or Sprite.
  * 
  * @author David Cairns
  *
  */
-public class Sprite {
+public class Sprite implements RenderedSprite{
 
 	// The current Animation to use for this sprite
     private Animation anim;		
@@ -29,7 +31,8 @@ public class Sprite {
     private float radius;
 
     // The scale to draw the sprite at where 1 equals normal size
-    private double scale;
+    private double scalex;
+    private double scaley;
     // The rotation to apply to the sprite image
     private double rotation;
 
@@ -50,7 +53,8 @@ public class Sprite {
     public Sprite(Animation anim) {
         this.anim = anim;
         render = true;
-        scale = 1.0f;
+        scalex = 1.0f;
+        scaley = 1.0f;
         rotation = 0.0f;
     }
 
@@ -135,11 +139,21 @@ public class Sprite {
     */
     public void update(long elapsedTime) {
     	if (!render) return;
+        
+        if(!Collision.checkLowerTileCollision(this)) {
+			dy = (float) (this.dy+(0.001f*elapsedTime));
+		} else {
+			dy=0;
+		}
+        
         x += dx * elapsedTime;
         y += dy * elapsedTime;
+        
         anim.update(elapsedTime);
+        
         width = anim.getImage().getWidth(null);
         height = anim.getImage().getHeight(null);
+        
         if (width > height)
         	radius = width / 2.0f;
         else
@@ -181,6 +195,20 @@ public class Sprite {
 	{
 	    this.x = x;
 	    this.y = y;
+	}
+		
+	/**
+	 * Called when this sprite has went off the top or bottom of the screen
+	 * 
+	 * top = 1
+	 * right = 2
+	 * bottom = 3
+	 * left = 4
+	 * 
+	 * @param edge [int] Which edge the sprite has fallen off
+	 */
+	public void offscreen(int edge) {
+		
 	}
 
     public void shiftX(float shift)
@@ -232,6 +260,10 @@ public class Sprite {
     public float getVelocityY() {
         return dy;
     }
+
+    public void move(boolean left) {
+    	
+    }
     
 
     /**
@@ -266,19 +298,29 @@ public class Sprite {
 		scaling and rotation are only applied when
 		using the drawTransformed method.
 	*/
-    public void setScale(float s)
+    public void setScale(float s, float ss)
     {
-    	scale = s;
+    	scalex = s;
+    	scaley = ss;
     }
 
 	/**
 		Get the current value of the scaling attribute.
 		See 'setScale' for more information.
 	*/
-    public double getScale()
+    public double getScaleX()
     {
-    	return scale;
+    	return scalex;
     }
+    
+    /**
+		Get the current value of the scaling attribute.
+		See 'setScale' for more information.
+	*/
+	public double getScaleY()
+	{
+		return scaley;
+	}
 
 	/**
 		Set the rotation angle for the sprite in degrees.
@@ -324,7 +366,7 @@ public class Sprite {
     {
     	if (!render) return;
 
-    	g.drawImage(getImage(),(int)x+xoff,(int)y+yoff,null);
+    	g.drawImage(getImage(),(int)x,(int)y,null);
     }
     
     /**
@@ -336,7 +378,39 @@ public class Sprite {
     	if (!render) return;
 
 		Image img = getImage();
+		g.setColor(Color.black);
     	g.drawRect((int)x,(int)y,img.getWidth(null),img.getHeight(null));
+    }
+    
+    public Rectangle getBoundingBox() {
+    	return new Rectangle((int) x, (int) y, (int) x + getWidth(), (int) y + getHeight());
+    }
+    
+    /**
+     *  Gets this sprites bounding box with dimensional offsets applied. If both offsets are 0, 
+     *  the normal bounding box is returned
+     *  
+     * @param xoff [int] The added width applied to the Rectangle, evenly split among both sides 
+     * 			(e.g. for 10 offset, the Rectangles position would be 5px left and 5px right)
+     * 
+     * @param yoff [int] The added height applied to the Rectangle, same as x offset.
+     * 
+     * @return This sprites bounding box with offsets applied
+     */
+    public Rectangle getBoundingBox(int xoff, int yoff) {
+    	Rectangle rect = null;
+    	
+    	if (xoff == 0 && yoff > 0) {
+    		rect = new Rectangle((int) x, (int) y-(yoff/2), (int) x + getWidth(), (int) y + getHeight() + (yoff/2));
+    	} else if (yoff == 0 && xoff > 0) {
+    		rect = new Rectangle((int) x + (xoff/2), (int) y, (int) x + getWidth() + (xoff/2), (int) y + getHeight());
+    	} else if(xoff > 0 && yoff > 0){
+    		rect = new Rectangle((int) x + (xoff/2), (int) y + (yoff/2), (int) x + getWidth() + (xoff/2), (int) y + getHeight() + (yoff/2));
+    	} else {
+    		return this.getBoundingBox();
+    	}
+    	
+    	return rect;
     }
     
     /**
@@ -365,8 +439,8 @@ public class Sprite {
     	if (!render) return;
 
 		AffineTransform transform = new AffineTransform();
-		transform.translate(Math.round(x)+xoff,Math.round(y)+yoff);
-		transform.scale(scale,scale);
+		transform.translate(Math.round(x+xoff),Math.round(y+yoff));
+		transform.scale(scalex,scaley);
 		transform.rotate(rotation,getImage().getWidth(null)/2,getImage().getHeight(null)/2);
 		// Apply transform to the image and draw it
 		g.drawImage(getImage(),transform,null);
@@ -398,6 +472,9 @@ public class Sprite {
     	xoff = x;
     	yoff = y;
     }
-    
 
+	@Override
+	public boolean shouldDraw() {
+		return this.render || true;
+	}
 }

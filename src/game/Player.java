@@ -2,21 +2,23 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.geom.AffineTransform;
 
 import javax.swing.ImageIcon;
 
 import engine2d.Animation;
+import engine2d.Sound;
 import engine2d.Sprite;
 
-class Player extends Sprite{
+class Player extends Sprite {
 	private static Animation walkAnim;
 	private static Animation attackAnim;
 	private static Animation idleAnim;
+	private static Sound attackSound;
 	
 	// Whether the sprite is facing left or not
-	private static boolean left;
+	private boolean left;
 	
+	// Load our static player fields so that they can be used by player instances
 	static {
 		Image img1 = new ImageIcon("images/player/idle.gif").getImage();
 		Image img2 = new ImageIcon("images/player/attack.gif").getImage();
@@ -29,11 +31,14 @@ class Player extends Sprite{
 		attackAnim.addFrame(img2, (long) 50);
 		
 		idleAnim = new Animation();
-		idleAnim.addFrame(img1, (long) 50);
+		idleAnim.addFrame(img1, (long) 1);
 	}
 	
 	public Player() {
 		super(idleAnim);
+		
+		Driver.dr.getRender().register(this, 0);
+		
 		this.setPosition(50, 50);
 	}
 	
@@ -46,17 +51,46 @@ class Player extends Sprite{
 		this.setAnimation(walkAnim);
 		
 		if(moveleft) {
+			if(moveleft && Collision.checkLeftTileCollision(this)) {
+				this.stop();
+				return;
+			}
+			
 			this.left = true;
-			this.setVelocityX(0.5f);
-		} else {
-			this.left = false;
 			this.setVelocityX(-0.5f);
+		} else {
+			if (Collision.checkRightTileCollision(this)) {
+				this.stop();
+				return;
+			}
+			
+			this.left = false;
+			this.setVelocityX(0.5f);
 		}
-		
+	}
+	
+	/**
+	 * Makes the player jump
+	 */
+	public void jump() {
+		if(Collision.checkLowerTileCollision(this)) {
+			this.setY(this.getY()-15);
+			this.setVelocityY(-0.5f);
+		}
 	}
 	
 	public void attack() {
+		attackSound = new Sound("audio/player_attack.wav", false);
+		attackSound.start();
 		this.setAnimation(attackAnim);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.setAnimation(idleAnim);
 	}
 	
 	public void stop() {
@@ -66,18 +100,15 @@ class Player extends Sprite{
 	
 	@Override
 	public void draw(Graphics2D g) {
-		if(!this.left) {
-			AffineTransform afn = new AffineTransform();
-			afn.translate(Math.round(getX()) + getWidth(), Math.round(getY()));
-			afn.scale(-1.0, 1.0);
+		if(this.left) {
+			this.setOffsets(getWidth(), 0);
+			this.setScale(-1.0f, 1.0f);
 			
-			//g.drawImage(getImage(), afn, null);
-			g.drawImage(getImage(), afn, null);
-		}else {
+			super.drawTransformed(g);
+		} else {
 			super.draw(g);
 		}
 		
 		drawBoundingBox(g);
-		
 	}
 }

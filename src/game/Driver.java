@@ -6,35 +6,55 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import engine2d.GameCore;
+import engine2d.TileMap;
 
 @SuppressWarnings("serial")
-class Driver extends GameCore{
+public class Driver extends GameCore{
 	public static Driver dr;
-	private Input userInput = new Input();
-	
-	public Player ply;
+
+	private TileMap tmap;
+	private Input userInput;
+
+	private Player ply;
 	
 	public static void main(String[] args) {
 		dr = new Driver();
-		dr.run(false, 1000, 1000);
+		dr.init();
+		dr.run(false, 1080, 768);
 	}
-	
-	private Driver() {
+		
+	private void init() {        
 		ply = new Player();
+		ply.setPosition(100, 50);
+		userInput = new Input();
+		tmap = new TileMap();
+		
+		tmap.loadMap("maps", "level1.txt");
+		setVisible(true);
+        setSize(tmap.getPixelWidth(), tmap.getPixelHeight());
 	}
 	
 	public void update(long elapsed)
-    {    	    	       	
-        ply.update(elapsed);
+    {  
+		ply.update(elapsed);
+		
+		if(Collision.checkRightTileCollision(ply)) {
+			ply.setVelocityX(0);
+		}
+		if(Collision.checkLeftTileCollision(ply)) {
+			ply.setVelocityX(0);
+		}
+		if(Collision.checkLowerTileCollision(ply)) {
+			ply.setVelocityY(0);
+		}
     }
-
-	@Override
-	public void draw(Graphics2D g) {
-		g.setColor(Color.black);
-        g.fillRect(0,0,getWidth(),getHeight());
-        g.setColor(Color.yellow);
-        
-        ply.draw(g);
+	
+	public TileMap getTileMap() {
+		return this.tmap;
+	}
+	
+	public Player getPlayer() {
+		return this.ply;
 	}
 	
 	// Move our user input (mouse and keyboard listeners) to an outside class,
@@ -77,5 +97,12 @@ class Driver extends GameCore{
 	@Override
 	public void mouseEntered(MouseEvent e) { 
 		userInput.mouseEntered(e);
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		g.setColor(Color.cyan);
+		g.fillRect(0, 0, Driver.dr.getWidth(), Driver.dr.getHeight());
+		tmap.draw(g, 0, 0);
 	}
 }

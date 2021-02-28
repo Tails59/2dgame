@@ -9,25 +9,31 @@ class Input {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) 
 			Driver.dr.stop();
 			
-		// Player Movement
+		// Player Control
 		switch(e.getKeyCode()) {
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_D:
-				Driver.dr.ply.move(true);
+				Driver.dr.getPlayer().move(false);
 				break;
 
 			case KeyEvent.VK_LEFT:
 			case KeyEvent.VK_A:
-				Driver.dr.ply.move(false);
+				Driver.dr.getPlayer().move(true);
 				break;
 
 			case KeyEvent.VK_UP:
 			case KeyEvent.VK_W:
+				Driver.dr.getPlayer().jump();
 				break;
 		
 			case KeyEvent.VK_DOWN:
 			case KeyEvent.VK_S:
-				break;				
+				break;
+				
+			case KeyEvent.VK_SPACE:
+				Driver.dr.getPlayer().stop();
+				Driver.dr.getPlayer().attack();
+				break;
 		}
 	}
 	
@@ -38,7 +44,7 @@ class Input {
 			case KeyEvent.VK_D:
 			case KeyEvent.VK_LEFT:
 			case KeyEvent.VK_A:
-				Driver.dr.ply.stop();
+				Driver.dr.getPlayer().stop();
 				break;		
 		}
 	}
@@ -52,7 +58,7 @@ class Input {
 	}
 	
 	public void mousePressed(MouseEvent e) {
-		
+		System.out.println("test");
 	}
 	
 	public void mouseReleased(MouseEvent e) { 

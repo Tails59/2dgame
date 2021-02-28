@@ -37,6 +37,7 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
     private BufferedImage buffer=null;	// buffer is used as a buffered image for drawing offscreen
     private Graphics2D bg=null;    		// The virtual Graphics2D device associated with the above image
     
+    protected Render render;
     
     /**
      * Default constructor for GameCore
@@ -44,12 +45,15 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
      */
     public GameCore()
     {
+    	setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     	isRunning = false;
     	fullScreen = false;
     	
         frames = 1;
         startTime = 1;
         currTime = 1;
+        
+        render = new Render();
     }
 
 
@@ -90,7 +94,6 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
      * @param yres	Height in pixels of game screen
      */
     private void init(boolean full, int xres, int yres) {
-    	
     	fullScreen = full;
     	
     	if (fullScreen)
@@ -135,6 +138,13 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
     	{
     		screen.restoreScreen();
     	}
+    }
+    
+    /**
+     * Returns the renderer, for registering sprites
+     */
+    public Render getRender() {
+    	return render;
     }
 
     /**
@@ -185,13 +195,17 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
 	            {
 	            	// Set the clipping (drawable) region to be the screen bounds
 	            	g.setClip(0, 0, getWidth(), getHeight());
-		            draw(g);
+		            
+	            	draw(g);
+	            	render.draw(g);
+	            	
 	            	screen.update();
 	            	g.dispose();
 	            }
 	            else
 	            {
 	            	draw(bg);
+	            	render.draw(bg);
 	            	g.drawImage(buffer,null,0,0);
  	            }
             }
