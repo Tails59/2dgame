@@ -42,6 +42,24 @@ class Player extends Sprite {
 		this.setPosition(50, 50);
 	}
 	
+	private float calculateXOffset() {
+    	float x = super.getX();
+		int w = super.getWidth();
+		
+		if((int) (x + (w/2)) >= Driver.dr.getWidth()/2) {
+			return (x + (w/2) - (Driver.dr.getWidth()/2));
+		}
+		
+		return 0;
+    }
+	
+    @Override
+    public void update(long elapsedTime) {
+    	this.xoff = (int) calculateXOffset();
+    	
+    	super.update(elapsedTime);
+    }
+    
 	/**
 	 * Moves the player left/right
 	 * 
@@ -99,12 +117,22 @@ class Player extends Sprite {
 	}
 	
 	@Override
+<<<<<<< Updated upstream
 	public void draw(Graphics2D g) {
 		if(this.left) {
 			this.setOffsets(getWidth(), 0);
+=======
+	public void draw(Graphics2D g) {	
+		//float xo = this.getXOffset();
+		
+		if(this.left) {
+			this.setOffsets((int) (this.getXOffset() - this.getWidth()), 0);
+>>>>>>> Stashed changes
 			this.setScale(-1.0f, 1.0f);
 			
 			super.drawTransformed(g);
+			
+			this.setOffsets((int) (this.getXOffset() + this.getWidth()), 0);
 		} else {
 			super.draw(g);
 		}
