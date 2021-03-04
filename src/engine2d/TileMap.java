@@ -1,6 +1,7 @@
 package engine2d;
 
 import javax.swing.ImageIcon;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -43,6 +44,8 @@ public class TileMap
 	private int mapHeight=0;	// The maps height in tiles
 	private int tileWidth=0;	// The width of a tile in pixels
 	private int tileHeight=0;	// The height of a tile in pixels
+	private int xOffset = 0;
+	private int yOffset = 0;
 	
 	// imagemap contains a set of character to image mappings for
 	// quick loop up of the image associated with a given character.
@@ -88,6 +91,10 @@ public class TileMap
 	 */
 	public int getPixelWidth() {
 		return mapWidth * tileWidth;
+	}
+	
+	public void setXOffset(int offset) {
+		this.xOffset = offset;
 	}
 	
 	/**
@@ -253,7 +260,7 @@ public class TileMap
 	public int getTileXC(int x, int y)
 	{
 		if (!valid(x,y)) return 0;
-		return tmap[x][y].getXC();
+		return tmap[x][y].getXC() + this.xOffset;
 	}
 	
 	/**
@@ -331,7 +338,7 @@ public class TileMap
 	public void draw(Graphics2D g, int xoff, int yoff)
 	{
 		if (g == null) return;
-	
+		
 		Image img=null;
 		Rectangle rect = (Rectangle)g.getClip();
 		int xc,yc;
@@ -344,7 +351,7 @@ public class TileMap
 				if (img == null) continue;
 				xc = xoff + c*tileWidth;
 				yc = yoff + r*tileHeight;
-				
+
 				// Only draw the tile if it is on screen, otherwise go back round the loop
 				if (xc+tileWidth < 0 || xc >= rect.x + rect.width) continue;
 				if (yc+tileHeight < 0 || yc >= rect.y + rect.height) continue;

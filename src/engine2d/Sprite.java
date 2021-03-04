@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.geom.*;
 
 import game.Collision;
+import game.Driver;
 
 /**
  * This class provides the functionality for a moving animated image or Sprite.
@@ -129,6 +130,10 @@ public class Sprite implements RenderedSprite{
     public Animation getAnimation()
     {
     	return anim;
+    }
+    
+    public float getXOffset() {
+    	return this.getX();
     }
 
     /**
@@ -346,8 +351,8 @@ public class Sprite implements RenderedSprite{
     */
     public void stop()
     {
-    	dx = 0;
-    	dy = 0;
+    	setVelocityX(0);
+    	setVelocityY(0);
     }
 
     /**
@@ -365,7 +370,7 @@ public class Sprite implements RenderedSprite{
     public void draw(Graphics2D g)
     {
     	if (!render) return;
-
+    		
     	g.drawImage(getImage(),(int)x,(int)y,null);
     }
     

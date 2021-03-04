@@ -6,6 +6,7 @@ import java.util.Vector;
 /**
  * A class for registering sprites to have their draw method called,
  * rather than having to hard-code each sprites draw method into the driver
+ * 
  * @author Taylor Paige
  *
  */

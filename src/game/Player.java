@@ -9,7 +9,7 @@ import engine2d.Animation;
 import engine2d.Sound;
 import engine2d.Sprite;
 
-class Player extends Sprite {
+public class Player extends Sprite {
 	private static Animation walkAnim;
 	private static Animation attackAnim;
 	private static Animation idleAnim;
@@ -99,13 +99,32 @@ class Player extends Sprite {
 	}
 	
 	@Override
-	public void draw(Graphics2D g) {
+	public float getX() {
+		return super.getX();
+	}
+	
+	public float getXOffset() {	
+		float x = super.getX();
+		
+		if((int) x >= Driver.dr.getWidth()/2) {
+			return x - (Driver.dr.getWidth()/2);
+		}
+		
+		return 0;
+	}
+	
+	@Override
+	public void draw(Graphics2D g) {	
+		float xo = this.getXOffset();
+		
+		this.setOffsets(0, 0);
 		if(this.left) {
-			this.setOffsets(getWidth(), 0);
+			this.setOffsets((int) (getWidth() - xo), 0);
 			this.setScale(-1.0f, 1.0f);
 			
 			super.drawTransformed(g);
 		} else {
+			super.setOffsets((int) -xo, 0);
 			super.draw(g);
 		}
 		

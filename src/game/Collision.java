@@ -44,9 +44,11 @@ public class Collision {
     }
     
     private static boolean checkTileCollision(Sprite sprite, float pos1, float pos2) {
+    	System.out.println("Collision: " + pos1);
+		
     	TileMap tmap = Driver.dr.getTileMap();
     	Rectangle spriteBox = sprite.getBoundingBox();
-
+		
     	int xtile = (int) (pos1/tmap.getTileWidth());
     	int ytile = (int) (pos2/tmap.getTileHeight());
     	

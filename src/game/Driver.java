@@ -103,6 +103,7 @@ public class Driver extends GameCore{
 	public void draw(Graphics2D g) {
 		g.setColor(Color.cyan);
 		g.fillRect(0, 0, Driver.dr.getWidth(), Driver.dr.getHeight());
-		tmap.draw(g, 0, 0);
+
+		tmap.draw(g, (int) -ply.getX(), 0);
 	}
 }

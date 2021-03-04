@@ -37,7 +37,7 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
     private BufferedImage buffer=null;	// buffer is used as a buffered image for drawing offscreen
     private Graphics2D bg=null;    		// The virtual Graphics2D device associated with the above image
     
-    protected Render render;
+    public Render render;
     
     /**
      * Default constructor for GameCore
