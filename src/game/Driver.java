@@ -103,12 +103,6 @@ public class Driver extends GameCore{
 	public void draw(Graphics2D g) {
 		g.setColor(Color.cyan);
 		g.fillRect(0, 0, Driver.dr.getWidth(), Driver.dr.getHeight());
-<<<<<<< Updated upstream
 		tmap.draw(g, 0, 0);
-=======
-
-		tmap.setXOffset((int) -ply.getXOffset());
-		tmap.draw(g, -0, 0);
->>>>>>> Stashed changes
 	}
 }

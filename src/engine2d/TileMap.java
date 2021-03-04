@@ -342,7 +342,7 @@ public class TileMap
 			{
 				img = getTileImage(c, r);
 				if (img == null) continue;
-				xc = this.xOffset + c*tileWidth;
+				xc = xoff + c*tileWidth;
 				yc = yoff + r*tileHeight;
 				
 				// Only draw the tile if it is on screen, otherwise go back round the loop

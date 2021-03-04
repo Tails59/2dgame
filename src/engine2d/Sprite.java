@@ -5,10 +5,7 @@ import java.awt.*;
 import java.awt.geom.*;
 
 import game.Collision;
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 /**
  * This class provides the functionality for a moving animated image or Sprite.
  * 
@@ -44,8 +41,8 @@ public class Sprite implements RenderedSprite{
     
     // The draw offset associated with this sprite. Used to draw it
     // relative to specific on screen position (usually the player)
-    protected int xoff=0;
-    protected int yoff=0;
+    private int xoff=0;
+    private int yoff=0;
 
     /**
      *  Creates a new Sprite object with the specified Animation.
@@ -133,17 +130,6 @@ public class Sprite implements RenderedSprite{
     {
     	return anim;
     }
-<<<<<<< Updated upstream
-=======
-    
-    public float getXOffset() {
-    	return xoff;
-    }
-    
-    public float getYOffset() {
-    	return yoff;
-    }
->>>>>>> Stashed changes
 
     /**
         Updates this Sprite's Animation and its position based
@@ -379,13 +365,8 @@ public class Sprite implements RenderedSprite{
     public void draw(Graphics2D g)
     {
     	if (!render) return;
-<<<<<<< Updated upstream
 
     	g.drawImage(getImage(),(int)x,(int)y,null);
-=======
-    	System.out.println(xoff);
-    	g.drawImage(getImage(), (int) x - xoff, (int)y, null);
->>>>>>> Stashed changes
     }
     
     /**
@@ -398,11 +379,38 @@ public class Sprite implements RenderedSprite{
 
 		Image img = getImage();
 		g.setColor(Color.black);
-    	g.drawRect((int) x - xoff, (int) y, (int) getWidth(), (int) getHeight());
+    	g.drawRect((int)x,(int)y,img.getWidth(null),img.getHeight(null));
     }
     
     public Rectangle getBoundingBox() {
-    	return new Rectangle((int) x - xoff, (int) y, (int) getWidth(), (int) getHeight());
+    	return new Rectangle((int) x, (int) y, (int) x + getWidth(), (int) y + getHeight());
+    }
+    
+    /**
+     *  Gets this sprites bounding box with dimensional offsets applied. If both offsets are 0, 
+     *  the normal bounding box is returned
+     *  
+     * @param xoff [int] The added width applied to the Rectangle, evenly split among both sides 
+     * 			(e.g. for 10 offset, the Rectangles position would be 5px left and 5px right)
+     * 
+     * @param yoff [int] The added height applied to the Rectangle, same as x offset.
+     * 
+     * @return This sprites bounding box with offsets applied
+     */
+    public Rectangle getBoundingBox(int xoff, int yoff) {
+    	Rectangle rect = null;
+    	
+    	if (xoff == 0 && yoff > 0) {
+    		rect = new Rectangle((int) x, (int) y-(yoff/2), (int) x + getWidth(), (int) y + getHeight() + (yoff/2));
+    	} else if (yoff == 0 && xoff > 0) {
+    		rect = new Rectangle((int) x + (xoff/2), (int) y, (int) x + getWidth() + (xoff/2), (int) y + getHeight());
+    	} else if(xoff > 0 && yoff > 0){
+    		rect = new Rectangle((int) x + (xoff/2), (int) y + (yoff/2), (int) x + getWidth() + (xoff/2), (int) y + getHeight() + (yoff/2));
+    	} else {
+    		return this.getBoundingBox();
+    	}
+    	
+    	return rect;
     }
     
     /**
@@ -431,7 +439,7 @@ public class Sprite implements RenderedSprite{
     	if (!render) return;
 
 		AffineTransform transform = new AffineTransform();
-		transform.translate(Math.round(x-xoff),Math.round(y+yoff));
+		transform.translate(Math.round(x+xoff),Math.round(y+yoff));
 		transform.scale(scalex,scaley);
 		transform.rotate(rotation,getImage().getWidth(null)/2,getImage().getHeight(null)/2);
 		// Apply transform to the image and draw it
