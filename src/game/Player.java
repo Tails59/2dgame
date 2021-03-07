@@ -117,17 +117,9 @@ class Player extends Sprite {
 	}
 	
 	@Override
-<<<<<<< Updated upstream
 	public void draw(Graphics2D g) {
 		if(this.left) {
-			this.setOffsets(getWidth(), 0);
-=======
-	public void draw(Graphics2D g) {	
-		//float xo = this.getXOffset();
-		
-		if(this.left) {
 			this.setOffsets((int) (this.getXOffset() - this.getWidth()), 0);
->>>>>>> Stashed changes
 			this.setScale(-1.0f, 1.0f);
 			
 			super.drawTransformed(g);

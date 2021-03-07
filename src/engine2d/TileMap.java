@@ -1,6 +1,9 @@
 package engine2d;
 
 import javax.swing.ImageIcon;
+
+import game.Driver;
+
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -43,6 +46,7 @@ public class TileMap
 	private int mapHeight=0;	// The maps height in tiles
 	private int tileWidth=0;	// The width of a tile in pixels
 	private int tileHeight=0;	// The height of a tile in pixels
+	private int xOffset=0;
 	
 	// imagemap contains a set of character to image mappings for
 	// quick loop up of the image associated with a given character.
@@ -253,7 +257,7 @@ public class TileMap
 	public int getTileXC(int x, int y)
 	{
 		if (!valid(x,y)) return 0;
-		return tmap[x][y].getXC();
+		return tmap[x][y].getXC() + this.xOffset;
 	}
 	
 	/**
@@ -319,6 +323,10 @@ public class TileMap
 	{
 		if (!valid(x,y)) return null;
 		return tmap[x][y];
+	}
+	
+	public void setXOffset(int x) {
+		this.xOffset = x;
 	}
 	
 	/**

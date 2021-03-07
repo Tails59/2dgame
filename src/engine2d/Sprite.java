@@ -5,10 +5,7 @@ import java.awt.*;
 import java.awt.geom.*;
 
 import game.Collision;
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
 /**
  * This class provides the functionality for a moving animated image or Sprite.
  * 
@@ -133,8 +130,6 @@ public class Sprite implements RenderedSprite{
     {
     	return anim;
     }
-<<<<<<< Updated upstream
-=======
     
     public float getXOffset() {
     	return xoff;
@@ -143,7 +138,6 @@ public class Sprite implements RenderedSprite{
     public float getYOffset() {
     	return yoff;
     }
->>>>>>> Stashed changes
 
     /**
         Updates this Sprite's Animation and its position based
@@ -379,13 +373,8 @@ public class Sprite implements RenderedSprite{
     public void draw(Graphics2D g)
     {
     	if (!render) return;
-<<<<<<< Updated upstream
 
-    	g.drawImage(getImage(),(int)x,(int)y,null);
-=======
-    	System.out.println(xoff);
     	g.drawImage(getImage(), (int) x - xoff, (int)y, null);
->>>>>>> Stashed changes
     }
     
     /**
@@ -431,7 +420,7 @@ public class Sprite implements RenderedSprite{
     	if (!render) return;
 
 		AffineTransform transform = new AffineTransform();
-		transform.translate(Math.round(x-xoff),Math.round(y+yoff));
+		transform.translate(Math.round(x-xoff),Math.round(y));
 		transform.scale(scalex,scaley);
 		transform.rotate(rotation,getImage().getWidth(null)/2,getImage().getHeight(null)/2);
 		// Apply transform to the image and draw it

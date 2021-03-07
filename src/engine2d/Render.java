@@ -42,7 +42,8 @@ public class Render {
 	public void unregister(RenderedSprite obj) {
 		int index = sprites.indexOf(obj);
 		
-		if(index != -1)
+		if(index != -1) {
 			sprites.remove(index);
+		}
 	}
 }

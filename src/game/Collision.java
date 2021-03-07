@@ -43,7 +43,7 @@ public class Collision {
     	s1.getBoundingBox().intersects(s2.getBoundingBox());
     }
     
-    private static boolean checkTileCollision(Sprite sprite, float pos1, float pos2) {
+    private static boolean checkTileCollision(Sprite sprite, float pos1, float pos2) {   	
     	TileMap tmap = Driver.dr.getTileMap();
     	Rectangle spriteBox = sprite.getBoundingBox();
 
@@ -55,11 +55,7 @@ public class Collision {
     	
     	Rectangle tileBox = new Rectangle(tx, ty, (int) tx+tmap.getTileWidth(), (int) ty+tmap.getTileHeight());
     	
-    	if(tileBox.intersects(spriteBox) && tmap.getTileChar(xtile, ytile) != '.') {
-    		return true;
-    	}
-    	
-    	return false;	
+    	return (tileBox.intersects(spriteBox) && tmap.getTileChar(xtile, ytile) != '.');
     }
     
     public static boolean checkUpperTileCollision(Sprite sprite) {
