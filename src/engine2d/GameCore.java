@@ -201,10 +201,12 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
 	            	// Set the clipping (drawable) region to be the screen bounds
 	            	g.setClip(0, 0, getWidth(), getHeight());
 		            
-	            	draw(g);
-	            	render.draw(g);
+	            	draw(bg);
+	            	render.draw(bg);
 	            	
 	            	screen.update();
+	            	
+	            	bg.drawImage(buffer, null, null);
 	            	g.dispose();
 	            }
 	            else

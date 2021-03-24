@@ -14,7 +14,8 @@ public class Render {
 	private Vector<RenderedSprite> sprites = new Vector<>(15, 5);
 	
 	public void draw(Graphics2D graphics) {
-		Iterator<RenderedSprite> iterator = sprites.iterator();
+		Vector<RenderedSprite> temp = new Vector<RenderedSprite>(sprites);
+		Iterator<RenderedSprite> iterator = temp.iterator();
 		
 		while(iterator.hasNext()) {
 			Sprite sprite = (Sprite) iterator.next();

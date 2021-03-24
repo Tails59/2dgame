@@ -100,7 +100,7 @@ public class Projectile extends Sprite implements UpdateableSprite, RenderedSpri
 		}, 850);
 	}
 	
-	public void draw(Graphics2D graphics) {
+	public void draw(Graphics2D graphics) {	
 		this.setOffsets((int) Driver.dr.getPlayer().getXOffset(), 0);
 		
 		if(this.left) {

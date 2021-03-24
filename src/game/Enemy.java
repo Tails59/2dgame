@@ -80,6 +80,11 @@ public class Enemy extends Sprite implements RenderedSprite {
 				this.setVelocityY(0);
 			}
 			
+			//Prevent sprites being stuck inside tiles
+			if(Collision.checkLowerTileCollision(this) && Collision.checkLeftTileCollision(this) && Collision.checkRightTileCollision(this)) {
+				this.setY(this.getY() - 5);
+			}
+			
 			//AI Movement control
 			if(this.getY() >= ply.getY() - 30 || this.getY() <= ply.getY() + 30) {				
 				if(this.getX() >= ply.getX() - DETECTION_RANGE && this.getX() <= ply.getX() + DETECTION_RANGE) {
