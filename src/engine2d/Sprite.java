@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.geom.*;
 
 import game.Collision;
+import game.Driver;
 
 /**
  * This class provides the functionality for a moving animated image or Sprite.
@@ -43,6 +44,15 @@ public class Sprite implements RenderedSprite{
     // relative to specific on screen position (usually the player)
     protected int xoff=0;
     protected int yoff=0;
+    
+    //The parent sprite, there wont be any collision interactions with this
+    //Used for things like spawning bullets
+    public final Sprite parent;
+    
+    public boolean left = false;
+    
+    //Determines whether or not this sprite is affected by gravity
+    protected boolean hasMass = true;
 
     /**
      *  Creates a new Sprite object with the specified Animation.
@@ -50,12 +60,19 @@ public class Sprite implements RenderedSprite{
      * @param a The animation to use for the sprite.
      * 
      */
-    public Sprite(Animation anim) {
+    public Sprite(Animation anim, Sprite parent) {
         this.anim = anim;
         render = true;
         scalex = 1.0f;
         scaley = 1.0f;
         rotation = 0.0f;
+        
+        left = false;
+        this.parent = parent;
+    }
+    
+    public Sprite(Animation anim) {
+    	this(anim, null);
     }
 
     /**
@@ -148,11 +165,13 @@ public class Sprite implements RenderedSprite{
     public void update(long elapsedTime) {
     	if (!render) return;
         
-        if(!Collision.checkLowerTileCollision(this)) {
+        if(!Collision.checkLowerTileCollision(this) && hasMass) {
 			dy = (float) (this.dy+(0.001f*elapsedTime));
 		} else {
 			dy=0;
 		}
+        
+        Collision.handleScreenEdge(this);
         
         x += dx * elapsedTime;
         y += dy * elapsedTime;
@@ -206,17 +225,15 @@ public class Sprite implements RenderedSprite{
 	}
 		
 	/**
-	 * Called when this sprite has went off the top or bottom of the screen
-	 * 
-	 * top = 1
-	 * right = 2
-	 * bottom = 3
-	 * left = 4
+	 * Called when this sprite has went off the screen
 	 * 
 	 * @param edge [int] Which edge the sprite has fallen off
 	 */
 	public void offscreen(int edge) {
-		
+		if(edge == Collision.RIGHT) {
+			this.stop();
+			this.setX(Driver.dr.getTileMap().getPixelWidth() - this.getWidth());
+		}
 	}
 
     public void shiftX(float shift)
@@ -348,6 +365,8 @@ public class Sprite implements RenderedSprite{
     {
     	return Math.toDegrees(rotation);
     }
+    
+    public void touch(Sprite other) {    }
 
     /**
      	Stops the sprites movement at the current position
@@ -385,7 +404,6 @@ public class Sprite implements RenderedSprite{
     {
     	if (!render) return;
 
-		Image img = getImage();
 		g.setColor(Color.black);
     	g.drawRect((int) x - xoff, (int) y, (int) getWidth(), (int) getHeight());
     }
@@ -456,6 +474,6 @@ public class Sprite implements RenderedSprite{
 
 	@Override
 	public boolean shouldDraw() {
-		return this.render || true;
+		return false;
 	}
 }

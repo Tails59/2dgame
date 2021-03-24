@@ -6,8 +6,13 @@ import java.awt.event.MouseEvent;
 class Input {
 	public void keyPressed(KeyEvent e) {
 		// Game controls
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) 
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			Driver.dr.stop();
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_F1) {
+			System.out.println(Driver.dr.getPlayer().getX() +", "+ Driver.dr.getPlayer().getY());
+		}
 			
 		// Player Control
 		switch(e.getKeyCode()) {
@@ -29,17 +34,16 @@ class Input {
 			case KeyEvent.VK_DOWN:
 			case KeyEvent.VK_S:
 				break;
-				
-			case KeyEvent.VK_SPACE:
-				Driver.dr.getPlayer().stop();
-				Driver.dr.getPlayer().attack();
-				break;
 		}
 	}
 	
 	public void keyReleased(KeyEvent e) {
 		// Player Movement
 		switch(e.getKeyCode()) {
+			case KeyEvent.VK_SPACE:
+			Driver.dr.getPlayer().attack();
+			break;
+			
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_D:
 			case KeyEvent.VK_LEFT:

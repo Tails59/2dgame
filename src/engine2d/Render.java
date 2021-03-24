@@ -1,6 +1,7 @@
 package engine2d;
 
 import java.awt.Graphics2D;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -12,9 +13,15 @@ import java.util.Vector;
 public class Render {
 	private Vector<RenderedSprite> sprites = new Vector<>(15, 5);
 	
-	public void draw(Graphics2D g) {		
-		for(RenderedSprite spr: sprites) {
-			spr.draw(g);
+	public void draw(Graphics2D graphics) {
+		Iterator<RenderedSprite> iterator = sprites.iterator();
+		
+		while(iterator.hasNext()) {
+			Sprite sprite = (Sprite) iterator.next();
+			
+			if(sprite.shouldDraw()) {
+				sprite.draw(graphics);
+			}
 		}
 	}
 	
@@ -25,8 +32,8 @@ public class Render {
 	 *  @param obj [RenderedSprite] Object that will have its draw() method called
 	 *  @param level [int] Priority this object will have over being drawn before others,
 	 */
-	public void register(RenderedSprite obj, int level) {
-		sprites.add(level, obj);
+	public void register(RenderedSprite obj) {
+		sprites.add(obj);
 	}
 	
 	/**

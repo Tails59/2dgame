@@ -38,6 +38,7 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
     private Graphics2D bg=null;    		// The virtual Graphics2D device associated with the above image
     
     protected Render render;
+    protected UpdateSprites spriteUpdater;
     
     /**
      * Default constructor for GameCore
@@ -54,10 +55,10 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
         currTime = 1;
         
         render = new Render();
+        spriteUpdater = new UpdateSprites();
     }
 
-
-
+    
     /** 
      * Signals the game loop that it's time to quit 
      * 
@@ -145,6 +146,10 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
      */
     public Render getRender() {
     	return render;
+    }
+    
+    public UpdateSprites getSpriteUpdater() {
+    	return this.spriteUpdater;
     }
 
     /**

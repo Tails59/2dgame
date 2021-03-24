@@ -2,8 +2,6 @@ package engine2d;
 
 import javax.swing.ImageIcon;
 
-import game.Driver;
-
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;

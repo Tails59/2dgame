@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Rectangle;
+import java.util.Collection;
 
 import engine2d.Sprite;
 import engine2d.TileMap;
@@ -15,11 +16,11 @@ public class Collision {
      * Checks and handles collisions with the edge of the screen
      * 
      * @param s			The Sprite to check collisions for
-     * @param tmap		The tile map to check 
-     * @param elapsed	How much time has gone by since the last call
      */
-    public static void handleScreenEdge(Sprite s, TileMap tmap, long elapsed)
+    public static void handleScreenEdge(Sprite s)
     {
+    	TileMap tmap = Driver.dr.getTileMap();
+    	
     	//Check if half of the sprite has fallen off the screen bottom
     	if (s.getY() + (s.getHeight()/2) > tmap.getPixelHeight()) {
     		s.offscreen(BOTTOM);
@@ -34,13 +35,38 @@ public class Collision {
     		s.offscreen(RIGHT);
     	}
     	
-    	if (s.getX() + (s.getWidth()/2) <= 0){
+    	if (s.getX() <= 0){
+    		s.setX(s.getX() + 1);
+    		s.stop();
     		s.offscreen(LEFT);
     	}
     }
     
-    public static void checkSpriteCollision(Sprite s1, Sprite s2) {
-    	s1.getBoundingBox().intersects(s2.getBoundingBox());
+    public static boolean checkSpriteCollision(Sprite s1, Sprite s2) {
+    	if((s1.parent != s2 && s2.parent != s1) && s1.getBoundingBox().intersects(s2.getBoundingBox())) {
+    		s1.touch(s2);
+    		s2.touch(s1);
+    		
+    		return true;
+    	}
+    	
+    	return false;
+    }
+    
+    public static boolean checkSpriteCollision(Sprite s1, Collection<Sprite> sprites) {
+    	for(Object s2 : sprites) {
+    		if(s2 instanceof Sprite) {
+    			Sprite sprite2 = (Sprite) s2;
+    			
+    			if(checkSpriteCollision(s1, (Sprite) s2)) {
+    				sprite2.touch(s1);
+    				s1.touch(sprite2);
+        			return true;
+        		}
+    		}
+    	}
+    	
+    	return false;
     }
     
     private static boolean checkTileCollision(Sprite sprite, float pos1, float pos2) {   	

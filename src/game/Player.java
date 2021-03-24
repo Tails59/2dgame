@@ -2,42 +2,54 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 
 import engine2d.Animation;
+import engine2d.RenderedSprite;
 import engine2d.Sound;
 import engine2d.Sprite;
+import engine2d.UpdateableSprite;
 
-class Player extends Sprite {
+public class Player extends Sprite implements UpdateableSprite, RenderedSprite{
+	/*
+	 * Attack cooldown time in milliseconds
+	 */
+	private static final long ATTACK_COOLDOWN = 500;
+	private static final Timer timer = new Timer();
+	
+	private final int MAX_HEALTH = 10; 
+	
 	private static Animation walkAnim;
 	private static Animation attackAnim;
 	private static Animation idleAnim;
 	private static Sound attackSound;
 	
-	// Whether the sprite is facing left or not
-	private boolean left;
+	private long lastAttack = 0;
+	private int healthPoints = MAX_HEALTH;
 	
 	// Load our static player fields so that they can be used by player instances
 	static {
 		Image img1 = new ImageIcon("images/player/idle.gif").getImage();
-		Image img2 = new ImageIcon("images/player/attack.gif").getImage();
-		Image img3 = new ImageIcon("images/player/walk.gif").getImage();
+		Image img2 = new ImageIcon("images/player/idle-shooting.gif").getImage();
+		Image img3 = new ImageIcon("images/player/running.gif").getImage();
 
 		walkAnim = new Animation();
-		walkAnim.addFrame(img3, (long) 50);
+		walkAnim.addFrame(img3, (long) 1000);
 		
 		attackAnim = new Animation();
-		attackAnim.addFrame(img2, (long) 50);
+		attackAnim.addFrame(img2, (long) 1000);
 		
 		idleAnim = new Animation();
-		idleAnim.addFrame(img1, (long) 1);
+		idleAnim.addFrame(img1, (long) 1000);
 	}
 	
 	public Player() {
 		super(idleAnim);
 		
-		Driver.dr.getRender().register(this, 0);
+		Driver.dr.getRender().register(this);
 		
 		this.setPosition(50, 50);
 	}
@@ -45,6 +57,10 @@ class Player extends Sprite {
 	private float calculateXOffset() {
     	float x = super.getX();
 		int w = super.getWidth();
+		
+		if(x >= (Driver.dr.getTileMap().getPixelWidth() - Driver.dr.getWidth()/2)) {
+			return (Driver.dr.getTileMap().getPixelWidth() - Driver.dr.getWidth());
+		}
 		
 		if((int) (x + (w/2)) >= Driver.dr.getWidth()/2) {
 			return (x + (w/2) - (Driver.dr.getWidth()/2));
@@ -58,6 +74,16 @@ class Player extends Sprite {
     	this.xoff = (int) calculateXOffset();
     	
     	super.update(elapsedTime);
+    	
+    	if(Collision.checkRightTileCollision(this)) {
+			this.setVelocityX(0);
+		}
+		if(Collision.checkLeftTileCollision(this)) {
+			this.setVelocityX(0);
+		}
+		if(Collision.checkLowerTileCollision(this)) {
+			this.setVelocityY(0);
+		}
     }
     
 	/**
@@ -78,7 +104,7 @@ class Player extends Sprite {
 			this.setVelocityX(-0.5f);
 		} else {
 			if (Collision.checkRightTileCollision(this)) {
-				this.stop();
+				this.setVelocityX(0);
 				return;
 			}
 			
@@ -98,22 +124,52 @@ class Player extends Sprite {
 	}
 	
 	public void attack() {
-		attackSound = new Sound("audio/player_attack.wav", false);
+		if(!(System.currentTimeMillis() >= this.lastAttack + ATTACK_COOLDOWN)) {
+			return;
+		}
+		
+		attackSound = new Sound("audio/gunshot.wav", false);
 		attackSound.start();
+		
 		this.setAnimation(attackAnim);
 		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.setAnimation(idleAnim);
+		Player ply = this;
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				ply.setAnimation(idleAnim);
+			}
+		}, 650);
+		
+		new Projectile(this);
+		this.lastAttack = System.currentTimeMillis();
 	}
 	
 	public void stop() {
 		this.setVelocityX(0f);
 		this.setAnimation(idleAnim);
+	}
+	
+	public void touch(Sprite other) {
+		if(other instanceof Projectile) {
+			this.healthPoints -= 1;
+			
+			if(this.healthPoints <= 0) {
+				this.die();
+			}
+		}
+	}
+	
+	public void die() {
+		
+	}
+	
+	public int getMaxHealth() {
+		return this.MAX_HEALTH;
+	}
+	
+	public int getHealth() {
+		return this.healthPoints;
 	}
 	
 	@Override
@@ -128,7 +184,11 @@ class Player extends Sprite {
 		} else {
 			super.draw(g);
 		}
-		
-		drawBoundingBox(g);
+	}
+
+	@Override
+	public boolean shouldDraw() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 }

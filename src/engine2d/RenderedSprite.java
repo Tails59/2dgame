@@ -13,5 +13,5 @@ public interface RenderedSprite {
 	 */
 	public abstract boolean shouldDraw();
 	
-	public abstract void draw(Graphics2D e);
+	public abstract void draw(Graphics2D g);
 }
