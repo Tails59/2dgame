@@ -47,9 +47,35 @@ public class Enemy extends Sprite implements RenderedSprite {
 		runAnim.addFrame(img4, (long) 1);
 	}
 	
-	public static void init() {
-		new Enemy(710, 614);
-		new Enemy(1681, 419);
+	public static void setup(int level) {
+		resetLevel();
+		if(level == 1) {
+			new Enemy(710, 614);
+			new Enemy(1681, 413);
+			new Enemy(2373, 413);
+			new Enemy(2870, 413);
+			new Enemy(3523, 481);
+			new Enemy(4325, 481);
+		}else if(level == 2) {
+			new Enemy(927, 488);
+			new Enemy(1298, 351);
+			new Enemy(1838, 416);
+			new Enemy(2085, 616);
+			new Enemy(1281, 616);
+			new Enemy(2687, 288);
+			new Enemy(3475, 418);
+			new Enemy(3722, 618);
+			new Enemy(4063, 484);
+		}
+	}
+	
+	public static void resetLevel() {
+		for(Sprite sprite : enemySprites) {
+			Driver.dr.getRender().unregister(sprite);
+			Driver.dr.getSpriteUpdater().unregister(sprite);
+		}
+		
+		enemySprites = new ArrayList<Sprite>();
 	}
 	
 	public static void updateAll(long elapsedTime) {

@@ -54,6 +54,19 @@ public class Player extends Sprite implements UpdateableSprite, RenderedSprite{
 		this.setPosition(50, 50);
 	}
 	
+	/**
+	 * Detect when the player has hit the screen edge
+	 */
+	public void offscreen(int side) {
+		if(side == Collision.RIGHT) {
+			if(Driver.dr.currentLevel() == 3) {
+				return;
+			}
+			
+			Driver.dr.changeLevel(Driver.dr.currentLevel() + 1); //When the player reaches the end of the map, go to the next level
+		}
+	}
+	
 	private float calculateXOffset() {
     	float x = super.getX();
 		int w = super.getWidth();
@@ -121,6 +134,14 @@ public class Player extends Sprite implements UpdateableSprite, RenderedSprite{
 			this.setY(this.getY()-15);
 			this.setVelocityY(-0.5f);
 		}
+	}
+	
+	public void respawn(int x, int y) {
+		this.healthPoints = MAX_HEALTH;
+		this.lastAttack = 0;
+		this.left = false;
+		this.setVelocity(0, 0);
+		this.setPosition(x, y);
 	}
 	
 	public void attack() {

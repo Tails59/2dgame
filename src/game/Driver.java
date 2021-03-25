@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
@@ -20,15 +21,16 @@ public class Driver extends GameCore {
 
 	private static Image parallaxTree = new ImageIcon("images/background/jungle_bg_parallax.png").getImage();
 	private static Image jungleTrees = new ImageIcon("images/background/jungle_bg_trees.png").getImage();
+	private static Image caveBg = new ImageIcon("images/background/cave_bg.png").getImage();
 
 	BufferedImage backgroundBuffer;
 	Color bgcolour = new Color(52, 110, 235);
 
 	private TileMap tmap;
 	private Input userInput;
-	private ArrayList<Sprite> backgroundTrees = new ArrayList<>();
-
 	private Player ply;
+	
+	private int level = 0;
 
 	// Cached fields for optimising background images
 	private int mapw, ptw, jtw;
@@ -41,31 +43,51 @@ public class Driver extends GameCore {
 	}
 
 	private void init() {
-		Enemy.init();
-
 		ply = new Player();
-		ply.setPosition(47, 414);
-
-		userInput = new Input();
 		tmap = new TileMap();
+		userInput = new Input();
+		
+		changeLevel(1);
 
-		tmap.loadMap("maps", "level1.txt");
 		setVisible(true);
 		setSize(tmap.getPixelWidth(), tmap.getPixelHeight());
 
 		ui.UserInterface.init();
-
 		mapw = dr.tmap.getPixelWidth();
 		ptw = parallaxTree.getWidth(this);
 		jtw = jungleTrees.getWidth(this);
 	}
+	
+	public void changeLevel(int level) {
+		if(level == 1) {
+			Enemy.setup(1);
+			
+			ply.respawn(47, 414);
+			tmap.loadMap("maps", "level1.txt");
+		}else if(level == 2) {
+			Enemy.setup(2);
+			
+			ply.respawn(47, 610);
+			tmap.loadMap("maps", "level2.txt");
+		}else if(level == 3) {
+			Enemy.setup(0);
+			ply.respawn(750, 400);
+			tmap.loadMap("maps", "level3.txt");
+		}
+		
+		this.level = level;
+	}
 
-	public void update(long elapsed) {
+	public void update(long elapsed) {		
 		Driver.dr.getSpriteUpdater().update(elapsed);
 		ply.update(elapsed);
 		Enemy.updateAll(elapsed);
 
 		ui.UserInterface.update(elapsed);
+	}
+	
+	public int currentLevel() {
+		return this.level;
 	}
 
 	public TileMap getTileMap() {
@@ -129,10 +151,14 @@ public class Driver extends GameCore {
 		graphics.setColor(bgcolour);
 		graphics.fillRect(0 + offset, 0, tmap.getPixelWidth(), Driver.dr.getHeight());
 
-		drawBackground(graphics);
-		for (Sprite sprite : backgroundTrees) {
-			sprite.setOffsets((int) (-offset * 0.2), 0);
-			sprite.draw(graphics);
+		if(level == 1) {
+			if(ply.getX() >= 3406) { //Draw a different background in the cave area of the level
+				drawCaveBackground(graphics);
+			}else {
+				drawJungleBackground(graphics);
+			}
+		}else if(level == 2) {
+			drawCaveBackground(graphics);
 		}
 
 		tmap.setXOffset(offset);
@@ -146,7 +172,7 @@ public class Driver extends GameCore {
 	int x = 0;
 	int len;
 
-	private void drawBackground(Graphics2D graphics) {
+	private void drawJungleBackground(Graphics2D graphics) {
 		x = 0;
 		len = mapw / ptw + 1;
 		for (int i = 0; i < len; i++) {
@@ -158,11 +184,25 @@ public class Driver extends GameCore {
 		x = 0;
 		len = mapw / jtw + 1;
 		for (int i = 0; i < len; i++) {
-			graphics.drawImage(jungleTrees, (int) (x - 100 - ply.getXOffset() * 0.5), 400, null);
+			graphics.drawImage(jungleTrees, (int) (x - 100 - ply.getXOffset() * 0.5), 300, null);
 
 			x += jtw;
 		}
 
 		graphics.drawImage(backgroundBuffer, null, null);
+	}
+	
+	private void drawCaveBackground(Graphics2D g) {
+		BufferedImage buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graphics = buffer.createGraphics();
+		
+		x = 0;
+		
+		for(int i = 0; i < 2; i++) {
+			graphics.drawImage(caveBg, (int) (x - ply.getXOffset() * 0.1), 0, null);
+			x+= 1200;
+		}
+		
+		g.drawImage(buffer, null, null);
 	}
 }

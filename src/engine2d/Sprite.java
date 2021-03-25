@@ -13,7 +13,7 @@ import game.Driver;
  * @author David Cairns
  *
  */
-public class Sprite implements RenderedSprite{
+public class Sprite implements RenderedSprite, UpdateableSprite{
 
 	// The current Animation to use for this sprite
     private Animation anim;		

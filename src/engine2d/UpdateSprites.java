@@ -12,7 +12,8 @@ public class UpdateSprites {
 	private Vector<UpdateableSprite> sprites = new Vector<>(15, 5);
 	
 	public void update(long elapsedTime) {
-		Iterator<UpdateableSprite> iterator = sprites.iterator();
+		Vector<UpdateableSprite> temp = new Vector<UpdateableSprite>(sprites);
+		Iterator<UpdateableSprite> iterator = temp.iterator();
 		
 		while(iterator.hasNext()) {
 			UpdateableSprite sprite = iterator.next();
