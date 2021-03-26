@@ -22,7 +22,6 @@ public class Driver extends GameCore {
 	private static Image jungleTrees = new ImageIcon("images/background/jungle_bg_trees.png").getImage();
 	private static Image caveBg = new ImageIcon("images/background/cave_bg.png").getImage();
 
-	BufferedImage backgroundBuffer;
 	Color bgcolour = new Color(52, 110, 235);
 
 	private TileMap tmap;
@@ -201,8 +200,6 @@ public class Driver extends GameCore {
 
 			x += jtw;
 		}
-
-		graphics.drawImage(backgroundBuffer, null, null);
 	}
 	
 	private void drawCaveBackground(Graphics2D g) {
