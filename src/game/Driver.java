@@ -59,6 +59,10 @@ public class Driver extends GameCore {
 		backgroundSound.start();
 	}
 	
+	/**
+	 * Change the level
+	 * @param level [int] new level 
+	 */
 	public void changeLevel(int level) {
 		if(level == 1) {
 			Enemy.setup(1);
@@ -89,14 +93,26 @@ public class Driver extends GameCore {
 		Enemy.updateAll(elapsed);
 	}
 	
+	/**
+	 * Get the current level
+	 * @return the current level as an integer
+	 */
 	public int currentLevel() {
 		return this.level;
 	}
 
+	/**
+	 * Get the TileMap
+	 * @return tmap [TileMap] the TileMap object
+	 */
 	public TileMap getTileMap() {
 		return this.tmap;
 	}
-
+	
+	/**
+	 * Get the player object
+	 * @return ply [Player] the current player object
+	 */
 	public Player getPlayer() {
 		return this.ply;
 	}
@@ -174,6 +190,9 @@ public class Driver extends GameCore {
 		g.drawImage(buffer, null, null);
 	}
 	
+	/**
+	 * Restart the game from level 1
+	 */
 	public void restart() {
 		if(level == 3) {
 			dr.changeLevel(1);
@@ -184,6 +203,11 @@ public class Driver extends GameCore {
 	int x = 0;
 	int len;
 
+	/**
+	 * Draws the jungle/trees parallax background
+	 * 
+	 * @param graphics 2D Rendering context to draw the background onto
+	 */
 	private void drawJungleBackground(Graphics2D graphics) {
 		x = 0;
 		len = mapw / ptw + 1;
@@ -202,6 +226,10 @@ public class Driver extends GameCore {
 		}
 	}
 	
+	/**
+	 * Draw the cave/rocky background
+	 * @param g 2D Rendering context to draw it onto
+	 */
 	private void drawCaveBackground(Graphics2D g) {
 		BufferedImage buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = buffer.createGraphics();

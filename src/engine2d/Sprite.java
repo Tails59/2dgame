@@ -286,6 +286,11 @@ public class Sprite implements RenderedSprite, UpdateableSprite{
         return dy;
     }
 
+    /**
+     * Move this sprite
+     * 
+     * @param left [boolean] move it left?
+     */
     public void move(boolean left) {
     	
     }
@@ -366,6 +371,13 @@ public class Sprite implements RenderedSprite, UpdateableSprite{
     	return Math.toDegrees(rotation);
     }
     
+    /**
+     * Called when this sprite touches another
+     * The touch() method will also be called on the other sprite,
+     * with this Sprite as a parameter.
+     * 
+     * @param other [Sprite] the sprite that touched this
+     */
     public void touch(Sprite other) {    }
 
     /**
@@ -408,6 +420,11 @@ public class Sprite implements RenderedSprite, UpdateableSprite{
     	g.drawRect((int) x - xoff, (int) y, (int) getWidth(), (int) getHeight());
     }
     
+    /**
+     * Get the dimensions of the current sprite as a Rectangle object
+     * 
+     * @return bounding [Rectangle] A new rectangle object representing the sprites dimensions
+     */
     public Rectangle getBoundingBox() {
     	return new Rectangle((int) x - xoff, (int) y, (int) getWidth(), (int) getHeight());
     }
@@ -472,6 +489,9 @@ public class Sprite implements RenderedSprite, UpdateableSprite{
     	yoff = y;
     }
 
+    /**
+     * Whether the sprite should draw or not, similar as isVisible();
+     */
 	@Override
 	public boolean shouldDraw() {
 		return false;

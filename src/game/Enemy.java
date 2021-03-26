@@ -50,9 +50,9 @@ public class Enemy extends Sprite implements RenderedSprite {
 	/**
 	 * Create a new Enemy sprite
 	 * 
-	 * @param x
-	 * @param y
-	 * @return
+	 * @param x [int] x-coordinate
+	 * @param y [int] y-coordinate
+	 * @return A new Enemy object
 	 */
 	public static Enemy create(int x, int y) {	
 		Animation idleAnim = new Animation("images/grunt/idle.gif", 1000l);		
@@ -62,6 +62,9 @@ public class Enemy extends Sprite implements RenderedSprite {
 		return new Enemy(x, y, deathAnim, idleAnim, runAnim);
 	}
 	
+	/**
+	 * Resets the level, removing all Enemies
+	 */
 	public static void resetLevel() {
 		for(Sprite sprite : enemySprites) {
 			Driver.dr.getRender().unregister(sprite);
@@ -71,12 +74,21 @@ public class Enemy extends Sprite implements RenderedSprite {
 		enemySprites = new ArrayList<Sprite>();
 	}
 	
+	/**
+	 * Update all enemy sprites
+	 * 
+	 * @param elapsedTime
+	 */
 	public static void updateAll(long elapsedTime) {
 		for(Sprite sprite : enemySprites) {
 			sprite.update(elapsedTime);
 		}
 	}
 	
+	/**
+	 * Get all enemies in the current level
+	 * @return An arraylist of all the currently spawned enemies
+	 */
 	public static ArrayList<Sprite> getEnemies(){
 		return enemySprites;
 	}
@@ -114,7 +126,7 @@ public class Enemy extends Sprite implements RenderedSprite {
 						this.shoot();
 						this.stop();
 					}else{
-						if(this.getX() < ply.getX()) {
+						if(this.getX() < ply.getX()) {							
 							this.move(false);
 						} else {
 							this.move(true);
@@ -123,6 +135,8 @@ public class Enemy extends Sprite implements RenderedSprite {
 				}else {
 					this.stop();
 				}
+			}else {
+				this.stop();
 			}
 				
 			super.update(elapsedTime);
@@ -151,8 +165,8 @@ public class Enemy extends Sprite implements RenderedSprite {
 		this.setAnimation(runAnim);
 		
 		if(moveleft) {
-			if(moveleft && Collision.checkLeftTileCollision(this)) {
-				this.stop();
+			if(Collision.checkLeftTileCollision(this)) {
+				this.setVelocityX(0);
 				return;
 			}
 			
@@ -227,6 +241,7 @@ public class Enemy extends Sprite implements RenderedSprite {
 	@Override
 	public boolean shouldDraw() {
 		Player ply = Driver.dr.getPlayer();
+		
 		//Return whether or not the sprite is on screen
 		return ply.getX() + Driver.dr.getWidth() >= this.getX()
 				&& ply.getX() - Driver.dr.getWidth() <= this.getX();

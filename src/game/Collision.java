@@ -167,7 +167,7 @@ public class Collision {
      * @return colliding [boolean] True if there is a Tile directly to the left of the Sprite
      */
     public static boolean checkLeftTileCollision(Sprite sprite) {
-    	return checkTileCollision(sprite, sprite.getX(), sprite.getY())
-    			|| checkTileCollision(sprite, sprite.getX()-5, sprite.getY() + sprite.getHeight()-15);
+    	return checkTileCollision(sprite, sprite.getX()-10, sprite.getY())
+    			|| checkTileCollision(sprite, sprite.getX()-10, sprite.getY() + sprite.getHeight()-15);
     }
 }
