@@ -38,7 +38,7 @@ public class Player extends Sprite implements UpdateableSprite, RenderedSprite {
 		
 		return new Player(walkAnim, attackAnim, idleAnim, dieAnim);
 	}
-
+	
 	private Player(Animation walk, Animation attack, Animation idle, Animation die) {
 		super(idle);
 
@@ -60,9 +60,10 @@ public class Player extends Sprite implements UpdateableSprite, RenderedSprite {
 			if (Driver.dr.currentLevel() == 3) {
 				return;
 			}
-
-			Driver.dr.changeLevel(Driver.dr.currentLevel() + 1); // When the player reaches the end of the map, go to
-																	// the next level
+			
+			if(Driver.dr.currentLevel() != 3) {
+				Driver.dr.changeLevel(Driver.dr.currentLevel() + 1); // When the player reaches the end of the map, go to
+			}													// the next level
 		}
 	}
 

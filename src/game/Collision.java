@@ -6,6 +6,17 @@ import java.util.Collection;
 import engine2d.Sprite;
 import engine2d.TileMap;
 
+/**
+ * A class used for all collision in my game
+ * 
+ * The collision detection is done by creating a
+ * Rectangle object around both sprites/tiles to be
+ * checked, and then using the Rectangle.intersects()
+ * method to determine whether they are colliding.
+ * 
+ * @author Taylor Paige
+ *
+ */
 public class Collision {
 	public static final int TOP = 1;
 	public static final int BOTTOM = 3;
@@ -42,6 +53,15 @@ public class Collision {
     	}
     }
     
+    /**
+     * Check collision between two Sprites
+     * 
+     * Both sprites will have their touch() method called if colliding
+     * 
+     * @param s1 [Sprite]
+     * @param s2 [Sprite]
+     * @return colliding [boolean] True if the sprites are colliding
+     */
     public static boolean checkSpriteCollision(Sprite s1, Sprite s2) {
     	if((s1.parent != s2 && s2.parent != s1) && s1.getBoundingBox().intersects(s2.getBoundingBox())) {
     		s1.touch(s2);
@@ -53,6 +73,18 @@ public class Collision {
     	return false;
     }
     
+    /**
+     * Check collision between a Sprite and a Collection of many sprites
+     * 
+     * If the sprites are touching, both will have their touch() method called
+     * with the other sprite
+     * 
+     * @param s1 [Sprite] Sprite to check collision for, usually the player
+     * @param sprites [Collection<Sprite>] A collection of sprites, to check if s1 collides with
+     * 			any of them.
+     * 
+     * @return collides [boolean] True if s1 collides with any of the Sprites in the collection
+     */
     public static boolean checkSpriteCollision(Sprite s1, Collection<Sprite> sprites) {
     	for(Object s2 : sprites) {
     		if(s2 instanceof Sprite) {
@@ -69,6 +101,17 @@ public class Collision {
     	return false;
     }
     
+    /**
+     * Check tile collision for a Sprite based on co-ordinates
+     * You shouldn't use this directly - use the other methods below, which
+     * check for tile collision on all 4 sides of a Sprite
+     * 
+     * @param sprite [Sprite] Sprite to check collision for
+     * @param pos1 [float] X-coordinate for a tile check
+     * @param pos2 [float] Y-coordinate for a tile check
+     * @return colliding [boolean] True if there is a Tile at (pos1, pos2) 
+     * 			and the Sprite collides with it
+     */
     private static boolean checkTileCollision(Sprite sprite, float pos1, float pos2) {   	
     	TileMap tmap = Driver.dr.getTileMap();
     	Rectangle spriteBox = sprite.getBoundingBox();
@@ -84,21 +127,45 @@ public class Collision {
     	return (tileBox.intersects(spriteBox) && tmap.getTileChar(xtile, ytile) != '.');
     }
     
+    /**
+     * Check tile collision above the Sprite
+     * 
+     * @param sprite [Sprite] Collision will be checked above this Sprite
+     * @return colliding [boolean] True if there is a Tile directly above the Sprite
+     */
     public static boolean checkUpperTileCollision(Sprite sprite) {
 		return checkTileCollision(sprite, sprite.getX(), sprite.getY())
 				|| checkTileCollision(sprite, sprite.getX() + sprite.getWidth(), sprite.getY());
     }
     
+    /**
+     * Check tile collision underneath of the Sprite
+     * 
+     * @param sprite [Sprite] Collision will be checked underneath this Sprite
+     * @return colliding [boolean] True if there is a Tile directly underneath the Sprite
+     */
     public static boolean checkLowerTileCollision(Sprite sprite) {
     	return checkTileCollision(sprite, sprite.getX(), sprite.getY() + sprite.getHeight())
     			|| checkTileCollision(sprite, sprite.getX() + sprite.getWidth(), sprite.getY() + sprite.getHeight());
     }
-
+    
+    /**
+     * Check tile collision on the right side of the Sprite
+     * 
+     * @param sprite [Sprite] Collision will be checked on the right side of this Sprite
+     * @return colliding [boolean] True if there is a Tile directly to the right of the Sprite
+     */
     public static boolean checkRightTileCollision(Sprite sprite) {
     	return checkTileCollision(sprite, sprite.getX() + sprite.getWidth(), sprite.getY()) 
     			|| checkTileCollision(sprite, sprite.getX()+sprite.getWidth(), sprite.getY() + sprite.getHeight() - 15);
     }
 
+    /**
+     * Check tile collision on the left side of the Sprite
+     * 
+     * @param sprite [Sprite] Collision will be checked on the left side of this Sprite
+     * @return colliding [boolean] True if there is a Tile directly to the left of the Sprite
+     */
     public static boolean checkLeftTileCollision(Sprite sprite) {
     	return checkTileCollision(sprite, sprite.getX(), sprite.getY())
     			|| checkTileCollision(sprite, sprite.getX()-5, sprite.getY() + sprite.getHeight()-15);

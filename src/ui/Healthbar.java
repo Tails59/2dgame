@@ -4,6 +4,13 @@ import java.awt.Graphics2D;
 
 import game.Driver;
 
+/**
+ * The healthbar shown at the top of the player's screen,
+ * created by the UserInterface class
+ * 
+ * @author Taylor Paige
+ *
+ */
 class Healthbar {
 	public final int MAX_HEALTH;
 	

@@ -3,6 +3,14 @@ package game;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+/**
+ * A class to handle all input for the Game.
+ * Helps to keep the Driver class tidied up a bit,
+ * making it more readable.
+ * 
+ * @author Taylor Paige
+ *
+ */
 class Input {
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
