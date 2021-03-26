@@ -255,7 +255,13 @@ public class TileMap
 	public int getTileXC(int x, int y)
 	{
 		if (!valid(x,y)) return 0;
-		return tmap[x][y].getXC() + this.xOffset;
+		try {
+			return tmap[x][y].getXC() + this.xOffset;
+		} catch(NullPointerException e) {
+			//Trying to check collision before the map is fully loaded, ignore the error
+		}
+		
+		return -1;
 	}
 	
 	/**
@@ -268,7 +274,13 @@ public class TileMap
 	public int getTileYC(int x, int y)
 	{
 		if (!valid(x,y)) return 0;
-		return tmap[x][y].getYC();
+		try {
+			return tmap[x][y].getYC();
+		}catch(NullPointerException e) {
+			//Trying to check collision before the map is fully loaded, ignore the error
+		}
+		
+		return -1;
 	}
 	
 	/**

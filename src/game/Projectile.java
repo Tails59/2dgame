@@ -12,23 +12,34 @@ import engine2d.Sprite;
 import engine2d.UpdateableSprite;
 
 public class Projectile extends Sprite implements UpdateableSprite, RenderedSprite {
-	private static final Animation SHOOT_ANIM;
+	private static final float PROJECTILE_SPEED = 0.8f;
 	
 	private final Timer timer = new Timer();
-	private static final float PROJECTILE_SPEED = 0.8f;
+	private final Animation SHOOT_ANIM;
 	
 	private long spawnTime;
 	private final boolean left;
 	private final Animation DIE_ANIM;
 	private boolean destroyed = false;
 	
-	static {
-		SHOOT_ANIM = new Animation();
-		SHOOT_ANIM.addFrame(new ImageIcon("images/bullet.gif").getImage(), (long) 5);
+	
+	/**
+	 * Spawn a new projectile object
+	 * @param parent [Sprite] The parent object of the new sprite
+	 * @return projectile [Projectile] The newely created projectile object
+	 */
+	public static Projectile create(Sprite parent) {
+		Animation anim = new Animation();
+		anim.addFrame(new ImageIcon("images/bullet.gif").getImage(), (long) 15);
+		
+		return new Projectile(anim, parent);
 	}
 	
-	public Projectile(Sprite parent) {
-		super(SHOOT_ANIM, parent);
+	private Projectile(Animation anim, Sprite parent) {
+		super(anim, parent);
+		this.SHOOT_ANIM = anim;
+		SHOOT_ANIM.addFrame(new ImageIcon("images/bullet.gif").getImage(), (long) 5);
+		
 		this.hasMass = false;
 		this.left = parent.left;
 		
@@ -46,14 +57,6 @@ public class Projectile extends Sprite implements UpdateableSprite, RenderedSpri
 		spawnTime = System.currentTimeMillis();
 		Driver.dr.getRender().register(this);
 		Driver.dr.getSpriteUpdater().register(this);
-	}
-	
-	public Projectile(Enemy parent) {
-		this((Sprite) parent);
-	}
-	
-	public Projectile(Player parent) {
-		this((Sprite) parent);
 	}
 	
 	public void update(long elapsed) {

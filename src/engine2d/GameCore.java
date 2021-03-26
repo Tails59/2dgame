@@ -112,6 +112,7 @@ public abstract class GameCore extends JFrame implements KeyListener, MouseListe
         setVisible(true);
         
         win.addKeyListener(this);
+        win.addMouseListener(this);
         win.setFont(new Font("Dialog", Font.PLAIN, FONT_SIZE));
     }
     

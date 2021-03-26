@@ -4,16 +4,11 @@ import java.awt.Graphics2D;
 
 import game.Driver;
 
-
 class Healthbar {
 	public final int MAX_HEALTH;
 	
 	public Healthbar(int maxHealth) {		
 		this.MAX_HEALTH = maxHealth;
-	}
-	
-	public void update(long elapsedTime) {
-
 	}
 	
 	public void draw(Graphics2D graphics) {

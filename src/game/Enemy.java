@@ -1,12 +1,9 @@
 package game;
 
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.swing.ImageIcon;
 
 import engine2d.Animation;
 import engine2d.RenderedSprite;
@@ -15,58 +12,54 @@ import engine2d.Sprite;
 public class Enemy extends Sprite implements RenderedSprite {
 	public static final int DETECTION_RANGE = 500;
 	public static final int ATTACK_RANGE = 250;
-	public static long ATTACK_COOLDOWN = 400;
+	public static final long ATTACK_COOLDOWN = 500;
 	
 	private static ArrayList<Sprite> enemySprites = new ArrayList<>();
 	private static final Timer timer = new Timer();
 	
-	private static Animation idleAnim;
-	private static Animation hitAnim;
-	private static Animation deathAnim;
-	private static Animation runAnim;
+	private Animation idleAnim;
+	private Animation deathAnim;
+	private Animation runAnim;
 	
 	private int healthPts = 5;
 	private long lastAttack = 0;
 	
-	static {
-		Image img1 = new ImageIcon("images/grunt/idle.gif").getImage();
-		Image img2 = new ImageIcon("images/grunt/hit.gif").getImage();
-		Image img3 = new ImageIcon("images/grunt/die.gif").getImage();
-		Image img4 = new ImageIcon("images/grunt/run.gif").getImage();
-		
-		deathAnim = new Animation();
-		deathAnim.addFrame(img3, (long) 1);
-		
-		idleAnim = new Animation();
-		idleAnim.addFrame(img1, (long) 1);
-		
-		hitAnim = new Animation();
-		hitAnim.addFrame(img2, (long) 1);
-		
-		runAnim = new Animation();
-		runAnim.addFrame(img4, (long) 1);
-	}
-	
 	public static void setup(int level) {
 		resetLevel();
 		if(level == 1) {
-			new Enemy(710, 614);
-			new Enemy(1681, 413);
-			new Enemy(2373, 413);
-			new Enemy(2870, 413);
-			new Enemy(3523, 481);
-			new Enemy(4325, 481);
+			create(710, 614);
+			create(1681, 413);
+			create(2466, 352);
+			create(2677, 610);
+			create(2884, 352);
+			create(3523, 481);
+			create(4281, 610);
 		}else if(level == 2) {
-			new Enemy(927, 488);
-			new Enemy(1298, 351);
-			new Enemy(1838, 416);
-			new Enemy(2085, 616);
-			new Enemy(1281, 616);
-			new Enemy(2687, 288);
-			new Enemy(3475, 418);
-			new Enemy(3722, 618);
-			new Enemy(4063, 484);
+			create(927, 488);
+			create(1298, 351);
+			create(1838, 416);
+			create(2085, 616);
+			create(1281, 616);
+			create(2687, 288);
+			create(3475, 418);
+			create(3722, 618);
+			create(4063, 484);
 		}
+	}
+	
+	/**
+	 * Create a new Enemy sprite
+	 * 
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public static Enemy create(int x, int y) {	
+		Animation idleAnim = new Animation("images/grunt/idle.gif", 1000l);		
+		Animation deathAnim = new Animation("images/grunt/die.gif", 1000l);
+		Animation runAnim = new Animation("images/grunt/run.gif", 1000l);
+		
+		return new Enemy(x, y, deathAnim, idleAnim, runAnim);
 	}
 	
 	public static void resetLevel() {
@@ -88,8 +81,13 @@ public class Enemy extends Sprite implements RenderedSprite {
 		return enemySprites;
 	}
 	
-	public Enemy(int x, int y) {
-		super(idleAnim);
+	private Enemy(int x, int y, Animation death, Animation idle, Animation run) {
+		super(idle);
+		
+		this.idleAnim = idle;
+		this.deathAnim = death;
+		this.runAnim = run;
+		
 		this.setPosition(x, y);
 		enemySprites.add(this);
 		Driver.dr.getRender().register(this);
@@ -97,24 +95,22 @@ public class Enemy extends Sprite implements RenderedSprite {
 	
 	@Override
 	public void update(long elapsedTime) {
-		Player ply = Driver.dr.getPlayer();
-
 		if(shouldDraw()) {
+			Player ply = Driver.dr.getPlayer();
+			
 			if(!Collision.checkLowerTileCollision(this)) {
 				this.setVelocityY((float) (this.getVelocityY()+(0.001f*elapsedTime)));
 			} else {
 				this.setVelocityY(0);
 			}
 			
-			//Prevent sprites being stuck inside tiles
-			if(Collision.checkLowerTileCollision(this) && Collision.checkLeftTileCollision(this) && Collision.checkRightTileCollision(this)) {
-				this.setY(this.getY() - 5);
-			}
-			
 			//AI Movement control
-			if(this.getY() >= ply.getY() - 30 || this.getY() <= ply.getY() + 30) {				
+			if(this.getY() >= ply.getY() - 30 && this.getY() <= ply.getY() + 30) {				
 				if(this.getX() >= ply.getX() - DETECTION_RANGE && this.getX() <= ply.getX() + DETECTION_RANGE) {
 					if(this.getX() >=  ply.getX() - ATTACK_RANGE && this.getX() <= ply.getX() + ATTACK_RANGE) {
+						
+						this.left = !(this.getX() < ply.getX());
+						
 						this.shoot();
 						this.stop();
 					}else{
@@ -133,18 +129,11 @@ public class Enemy extends Sprite implements RenderedSprite {
 		}
 	}
 	
+	/**
+	 * Called when the sprite should take damage
+	 * from a projectile
+	 */
 	public void takeHit() {
-		//this.setAnimation(hitAnim);
-		
-		Enemy sprite = this;
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				sprite.setAnimation(idleAnim);
-			}
-		}, 950);
-		
-		
 		this.healthPts -= 1;
 		
 		if(this.healthPts <= 0) {
@@ -157,7 +146,8 @@ public class Enemy extends Sprite implements RenderedSprite {
 		}
 	}
 	
-	public void move(boolean moveleft, float speed) {
+	@Override
+	public void move(boolean moveleft) {
 		this.setAnimation(runAnim);
 		
 		if(moveleft) {
@@ -177,11 +167,6 @@ public class Enemy extends Sprite implements RenderedSprite {
 			this.left = false;
 			this.setVelocityX(0.1f);
 		}
-	}
-	
-	@Override
-	public void move(boolean moveleft) {
-		this.move(moveleft, 0.1f);
 	}
 	
 	/**
@@ -211,8 +196,7 @@ public class Enemy extends Sprite implements RenderedSprite {
 		}
 		
 		this.lastAttack = System.currentTimeMillis();
-		new Projectile(this);
-		
+		Projectile.create(this);		
 	}
 	
 	/**
@@ -238,15 +222,14 @@ public class Enemy extends Sprite implements RenderedSprite {
 		} else {
 			super.draw(graphics);
 		}
-		
-		this.drawBoundingBox(graphics);
 	}
 
 	@Override
 	public boolean shouldDraw() {
+		Player ply = Driver.dr.getPlayer();
 		//Return whether or not the sprite is on screen
-		return this.getX()+this.getWidth() >= Driver.dr.getPlayer().getX() - (Driver.dr.getWidth()/2) 
-				&& this.getX() <= Driver.dr.getPlayer().getX() + (Driver.dr.getWidth()/2);
+		return ply.getX() + Driver.dr.getWidth() >= this.getX()
+				&& ply.getX() - Driver.dr.getWidth() <= this.getX();
 	}
 
 }

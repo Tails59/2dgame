@@ -38,6 +38,13 @@ public class Animation {
         start();
     }
     
+    public Animation(String path, long len) {
+    	this();
+    	
+    	Image img = new ImageIcon(path).getImage();
+    	this.addFrame(img, len);
+    }
+    
     /**
      * Adds an image to the animation with the specified
      * duration (time to display the image).

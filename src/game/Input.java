@@ -5,17 +5,24 @@ import java.awt.event.MouseEvent;
 
 class Input {
 	public void keyPressed(KeyEvent e) {
+		int keyCode = e.getKeyCode();
 		// Game controls
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		if (keyCode == KeyEvent.VK_ESCAPE) {
 			Driver.dr.stop();
 		}
 		
-		if(e.getKeyCode() == KeyEvent.VK_F1) {
+		//Restart the game when you have completed
+		if(keyCode == KeyEvent.VK_E) {
+			Driver.dr.restart();
+		}
+		
+		//Print the player's current coordinates
+		if(keyCode == KeyEvent.VK_F1) {
 			System.out.println(Driver.dr.getPlayer().getX() +", "+ Driver.dr.getPlayer().getY());
 		}
 			
 		// Player Control
-		switch(e.getKeyCode()) {
+		switch(keyCode) {
 			case KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_D:
 				Driver.dr.getPlayer().move(false);
@@ -62,11 +69,18 @@ class Input {
 	}
 	
 	public void mousePressed(MouseEvent e) {
-		System.out.println("test");
 	}
 	
 	public void mouseReleased(MouseEvent e) { 
+		int x = e.getX();
 		
+		if ((int) Driver.dr.getPlayer().getX() >= Driver.dr.getWidth() / 2 && x <= Driver.dr.getWidth() / 2) {
+            x = (int) Driver.dr.getPlayer().getX() - (Driver.dr.getWidth() / 2 - x);
+        } else if ((int) Driver.dr.getPlayer().getX() >= Driver.dr.getWidth() / 2 && x > Driver.dr.getWidth() / 2) {
+            x = (int) Driver.dr.getPlayer().getX() + (x - Driver.dr.getWidth() / 2);
+        }
+		
+		Driver.dr.getPlayer().setPosition(x, e.getY());
 	}
 	
 	public void mouseExited(MouseEvent e) { 

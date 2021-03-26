@@ -1,18 +1,17 @@
 package game;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
+import engine2d.FadingSound;
 import engine2d.GameCore;
-import engine2d.Sprite;
+import engine2d.Sound;
 import engine2d.TileMap;
 
 @SuppressWarnings("serial")
@@ -43,7 +42,7 @@ public class Driver extends GameCore {
 	}
 
 	private void init() {
-		ply = new Player();
+		ply = Player.create();
 		tmap = new TileMap();
 		userInput = new Input();
 		
@@ -56,6 +55,9 @@ public class Driver extends GameCore {
 		mapw = dr.tmap.getPixelWidth();
 		ptw = parallaxTree.getWidth(this);
 		jtw = jungleTrees.getWidth(this);
+		
+		Sound backgroundSound = new Sound("audio/bg_music.wav", true);
+		backgroundSound.start();
 	}
 	
 	public void changeLevel(int level) {
@@ -70,9 +72,13 @@ public class Driver extends GameCore {
 			ply.respawn(47, 610);
 			tmap.loadMap("maps", "level2.txt");
 		}else if(level == 3) {
+			ui.UserInterface.toggleDrawEndscreen(!(ply.getHealth() <= 0));
 			Enemy.setup(0);
 			ply.respawn(750, 400);
 			tmap.loadMap("maps", "level3.txt");
+			
+			FadingSound snd = new FadingSound("audio/victory.wav");
+			snd.start();
 		}
 		
 		this.level = level;
@@ -82,8 +88,6 @@ public class Driver extends GameCore {
 		Driver.dr.getSpriteUpdater().update(elapsed);
 		ply.update(elapsed);
 		Enemy.updateAll(elapsed);
-
-		ui.UserInterface.update(elapsed);
 	}
 	
 	public int currentLevel() {
@@ -159,6 +163,8 @@ public class Driver extends GameCore {
 			}
 		}else if(level == 2) {
 			drawCaveBackground(graphics);
+		}else {
+			drawJungleBackground(graphics);
 		}
 
 		tmap.setXOffset(offset);
@@ -167,6 +173,13 @@ public class Driver extends GameCore {
 		ui.UserInterface.draw(graphics);
 
 		g.drawImage(buffer, null, null);
+	}
+	
+	public void restart() {
+		if(level == 3) {
+			dr.changeLevel(1);
+			ui.UserInterface.toggleDrawEndscreen(false);
+		}
 	}
 
 	int x = 0;

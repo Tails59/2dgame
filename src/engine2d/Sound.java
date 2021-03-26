@@ -7,40 +7,22 @@ public class Sound extends Thread {
 
 	String filename;		// The name of the file to play
 	boolean finished;		// A flag showing that the thread has finished
-	private boolean paused = false; //A flag showing that the audio is paused;
 	
 	private Clip clip;
-	
-	private long pos;
+	private boolean loop;
 	
 	/**
-	 * 
+	 * Create a new Sound
 	 * @param fname
-	 * @param startPaused [boolean] Whether the audio should play as soon as its created
+	 * @param startPaused
+	 * @param loop
+	 * @param af [FilteredAudio] A filtered audio stream
 	 */
-	public Sound(String fname, boolean startPaused) {
+	public Sound(String fname, boolean loop) {
 		filename = fname;
 		finished = false;
-	}
-	
-	public boolean isPaused() {
-		return this.paused;
-	}
-	
-	public void pause() {
-		if(paused)
-			return;
-
-		pos = clip.getLongFramePosition();
-		clip.stop();
-	}
-	
-	public void play() {
-		if(!paused)
-			return;
-
-		clip.start();
-		clip.setFramePosition((int) pos);
+		this.loop = loop;
+		//this.echo = echoEffect;
 	}
 
 	/**
@@ -57,12 +39,12 @@ public class Sound extends Thread {
 			AudioFormat	format = stream.getFormat();
 			DataLine.Info info = new DataLine.Info(Clip.class, format);
 			
-			// note to self: doesn't support 24bit audio
 			clip = (Clip)AudioSystem.getLine(info);
 			clip.open(stream);
+			clip.start();
 			
-			if(!paused) {
-				clip.start();
+			if(this.loop) {
+				clip.loop(Clip.LOOP_CONTINUOUSLY);
 			}
 			
 			Thread.sleep(100);
